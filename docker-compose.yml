@@ -1,0 +1,18 @@
+version: '3.9'
+
+services:
+  aluratracker:
+    container_name: aluratracker
+    entrypoint: sh ./.docker/entrypoint.sh
+    build:
+      context: ./
+    volumes:
+      - ./:/app-tracker
+    networks:
+      - net-bridge
+    ports:
+      - 8080:8080
+
+networks:
+  net-bridge:
+    driver: bridge
