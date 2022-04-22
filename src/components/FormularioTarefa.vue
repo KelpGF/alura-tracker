@@ -56,3 +56,10 @@
 		},
 	});
 </script>
+
+<style scoped>
+	.estilo-modo {
+		background-color: var(--bg-primario) !important;
+		color: var(--texto-primario) !important;
+	}
+</style>

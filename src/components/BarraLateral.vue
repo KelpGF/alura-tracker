@@ -6,17 +6,38 @@
 				src="../assets/logo.png"
 			/>
 		</h1>
-		<button
-			class="button"
-			@click="alterarTema"
-		>
-			{{ textoBotaoTema }} modo escuro
-		</button>
+		<div class="has-text-centered">
+			<button
+				class="button"
+				@click="alterarTema"
+			>
+				{{ textoBotaoTema }} modo escuro
+			</button>
+		</div>
+		<nav class="panel mt-5">
+			<ul>
+				<li
+					:key="`${rota.texto}-${idx}`"
+					v-for="(rota, idx) in listaRotas"
+				>
+					<router-link
+						class="link"
+						:to="rota.url"
+						:class="[$route.path === rota.url && 'router-link-active']"
+					>
+						<i :class="rota.icone"></i>
+						{{ rota.texto }}
+					</router-link>
+				</li>
+			</ul>
+		</nav>
 	</header>
 </template>
 
 <script lang="ts">
 	import { defineComponent } from 'vue';
+	import { rotas } from '@/routes/index';
+	import { IRotaNav } from '@/interfaces/ITarefa';
 
 	export default defineComponent({
 		name: 'BarraLateral',
@@ -26,12 +47,23 @@
 		data() {
 			return {
 				temaEscuro: false,
+				iconesRotas: ['fas fa-tasks', 'fas fa-project-diagram'],
 			};
 		},
 
 		computed: {
 			textoBotaoTema(): string {
 				return this.temaEscuro ? 'Desativar' : 'Ativar';
+			},
+
+			listaRotas(): IRotaNav[] {
+				return rotas.map(({ path, name }, idx) => {
+					return {
+						url: path,
+						texto: name as string,
+						icone: this.iconesRotas[idx],
+					};
+				});
 			},
 		},
 
@@ -50,7 +82,6 @@
 		background: #0d3b66;
 		width: 100%;
 		height: 100vh;
-		text-align: center;
 	}
 
 	@media only screen and (max-width: 768px) {
@@ -59,5 +90,18 @@
 			height: auto;
 			text-align: center;
 		}
+	}
+
+	.panel li {
+		margin: 8px 0;
+	}
+	.link {
+		color: #fff;
+	}
+	.link:hover {
+		color: #faf0ca;
+	}
+	.link.router-link-active {
+		color: #faf0ca;
 	}
 </style>
