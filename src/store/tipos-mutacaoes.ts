@@ -1,0 +1,8 @@
+export const ADD_PROJETO = 'ADD_PROJETO';
+export const EDITAR_PROJETO = 'EDITAR_PROJETO';
+export const EXCLUIR_PROJETO = 'EXCLUIR_PROJETO';
+
+export const ADD_TAREFA = 'ADD_TAREFA';
+export const EXCLUIR_TAREFA = 'EXCLUIR_TAREFA';
+
+export const NOTIFICAR = 'NOTIFICAR';

@@ -8,7 +8,7 @@
 		</h1>
 		<div class="has-text-centered">
 			<button
-				class="button"
+				class="button is-light"
 				@click="alterarTema"
 			>
 				{{ textoBotaoTema }} modo escuro
@@ -37,7 +37,7 @@
 <script lang="ts">
 	import { defineComponent } from 'vue';
 	import { rotas } from '@/routes/index';
-	import { IRotaNav } from '@/interfaces/ITarefa';
+	import { IRotaNav } from '@/interfaces/IRotaNav';
 
 	export default defineComponent({
 		name: 'BarraLateral',
@@ -57,7 +57,7 @@
 			},
 
 			listaRotas(): IRotaNav[] {
-				return rotas.map(({ path, name }, idx) => {
+				return rotas.slice(0, 2).map(({ path, name }, idx) => {
 					return {
 						url: path,
 						texto: name as string,
