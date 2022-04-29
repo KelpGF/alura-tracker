@@ -11,6 +11,7 @@
 				<input
 					type="text"
 					class="input"
+					id="nomeProjeto"
 					v-model="nomeProjeto"
 				/>
 			</div>
@@ -30,16 +31,16 @@
 </template>
 
 <script lang="ts">
-	import { defineComponent } from 'vue';
+	import { defineComponent, ref } from 'vue';
 	import { useStore } from '@/store';
-	import { ADD_PROJETO, EDITAR_PROJETO } from '@/store/tipos-mutacaoes';
 	import { TipoNotificacao } from '@/interfaces/INotificacao';
-	import { notificacaoMixin } from '@/mixins/notificar';
+	import { ATUALIZAR_PROJETO, CADASTRAR_PROJETO } from '@/store/tipos-acoes';
+	import { useRouter } from 'vue-router';
+
+	import useNotificador from '@/hooks/notificador';
 
 	export default defineComponent({
 		name: 'ProjetosForm',
-
-		mixins: [notificacaoMixin],
 
 		props: {
 			id: {
@@ -47,49 +48,108 @@
 			},
 		},
 
-		data() {
-			return {
-				nomeProjeto: '',
-			};
-		},
+		// data() {
+		// 	return {
+		// 		nomeProjeto: '',
+		// 	};
+		// },
 
-		methods: {
-			salvar() {
-				if (this.id) {
-					this.store.commit(EDITAR_PROJETO, { id: this.id, nome: this.nomeProjeto });
-					this.notificar({
-						titulo: 'Alterações salvas',
-						texto: 'O projeto foi atualizado com sucesso',
-						tipo: TipoNotificacao.SUCESSO,
-					});
-				} else {
-					this.store.commit(ADD_PROJETO, this.nomeProjeto);
-					this.notificar({
-						titulo: 'Excelente',
-						texto: 'O projeto foi cadastrado com sucesso',
-						tipo: TipoNotificacao.SUCESSO,
-					});
-				}
-				this.nomeProjeto = '';
+		// methods: {
+		// 	async salvar() {
+		// 		let titulo = 'Ops!';
+		// 		let texto = 'Ocorreu um erro ao enviar os dados';
+		// 		let tipo = TipoNotificacao.FALHA;
 
-				this.$router.push('/projetos');
-			},
-		},
+		// 		if (this.id) {
+		// 			await this.store
+		// 				.dispatch(ATUALIZAR_PROJETO, { id: this.id, nome: this.nomeProjeto })
+		// 				.then(() => {
+		// 					titulo = 'Alterações salvas';
+		// 					texto = 'O projeto foi atualizado com sucesso';
+		// 					tipo = TipoNotificacao.SUCESSO;
+		// 				})
+		// 				.catch((err) => {
+		// 					console.error(err);
+		// 				});
+		// 		} else {
+		// 			await this.store
+		// 				.dispatch(CADASTRAR_PROJETO, this.nomeProjeto)
+		// 				.then(() => {
+		// 					titulo = 'Excelente';
+		// 					texto = 'O projeto foi cadastrado com sucesso';
+		// 					tipo = TipoNotificacao.SUCESSO;
+		// 				})
+		// 				.catch((err) => {
+		// 					console.error(err);
+		// 				});
+		// 		}
 
-		setup() {
+		// 		this.nomeProjeto = '';
+		// 		this.$router.push('/projetos');
+		// 		this.notificar({ titulo, texto, tipo });
+		// 	},
+		// },
+
+		setup(props) {
 			const store = useStore();
+			const router = useRouter();
+
+			const { notificar } = useNotificador();
+			const nomeProjeto = ref('');
+
+			if (props.id) {
+				const projeto = store.state.projeto.projetos.find((p) => p.id == props.id);
+
+				nomeProjeto.value = projeto?.nome || '';
+			}
+
+			const salvar = async () => {
+				let titulo = 'Ops!';
+				let texto = 'Ocorreu um erro ao enviar os dados';
+				let tipo = TipoNotificacao.FALHA;
+
+				if (props.id) {
+					await store
+						.dispatch(ATUALIZAR_PROJETO, { id: props.id, nome: nomeProjeto.value })
+						.then(() => {
+							titulo = 'Alterações salvas';
+							texto = 'O projeto foi atualizado com sucesso';
+							tipo = TipoNotificacao.SUCESSO;
+						})
+						.catch((err) => {
+							console.error(err);
+						});
+				} else {
+					await store
+						.dispatch(CADASTRAR_PROJETO, nomeProjeto.value)
+						.then(() => {
+							titulo = 'Excelente';
+							texto = 'O projeto foi cadastrado com sucesso';
+							tipo = TipoNotificacao.SUCESSO;
+						})
+						.catch((err) => {
+							console.error(err);
+						});
+				}
+
+				nomeProjeto.value = '';
+				router.push('/projetos');
+				notificar({ titulo, texto, tipo });
+			};
 
 			return {
 				store,
+				nomeProjeto,
+				salvar,
 			};
 		},
 
-		mounted() {
-			if (this.id) {
-				const projeto = this.store.state.projetos.find((p) => p.id == this.id);
+		// mounted() {
+		// 	if (this.id) {
+		// 		const projeto = this.store.state.projeto.projetos.find((p) => p.id == this.id);
 
-				this.nomeProjeto = projeto?.nome || '';
-			}
-		},
+		// 		this.nomeProjeto = projeto?.nome || '';
+		// 	}
+		// },
 	});
 </script>

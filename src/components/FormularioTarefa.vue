@@ -39,7 +39,7 @@
 	import { keyStore } from '@/store';
 
 	import ITarefa from '@/interfaces/ITarefa';
-	import { computed, defineComponent } from 'vue';
+	import { computed, defineComponent, ref } from 'vue';
 	import TemporizadorSegundos from './TemporizadorSegundos.vue';
 
 	export default defineComponent({
@@ -51,34 +51,55 @@
 			TemporizadorSegundos,
 		},
 
-		data() {
-			return {
-				idProjeto: '',
-				descricao: '',
-			};
-		},
+		// data() {
+		// 	return {
+		// 		idProjeto: '',
+		// 		descricao: '',
+		// 	};
+		// },
 
-		methods: {
-			finalizarTarefa(tempoDecorrido: number): void {
+		// methods: {
+		// 	finalizarTarefa(tempoDecorrido: number): void {
+		// 		if (tempoDecorrido === 0) return;
+
+		// 		const tarefa: ITarefa = {
+		// 			descricao: this.descricao,
+		// 			duracaoEmSegundos: tempoDecorrido,
+		// 			projeto: this.projetos.find((p) => p.id == this.idProjeto) || null,
+		// 		};
+
+		// 		this.$emit('enviarForm', tarefa);
+
+		// 		this.descricao = '';
+		// 	},
+		// },
+
+		setup(props, { emit }) {
+			const store = useStore(keyStore);
+
+			const descricao = ref('');
+			const idProjeto = ref('');
+			const projetos = computed(() => store.state.projeto.projetos);
+
+			const finalizarTarefa = (tempoDecorrido: number): void => {
 				if (tempoDecorrido === 0) return;
 
 				const tarefa: ITarefa = {
-					descricao: this.descricao,
+					descricao: descricao.value,
 					duracaoEmSegundos: tempoDecorrido,
-					projeto: this.projetos.find((p) => p.id == this.idProjeto) || null,
+					projeto: projetos.value.find((p) => p.id == idProjeto.value) || null,
 				};
 
-				this.$emit('enviarForm', tarefa);
+				emit('enviarForm', tarefa);
 
-				this.descricao = '';
-			},
-		},
-
-		setup() {
-			const store = useStore(keyStore);
+				descricao.value = '';
+			};
 
 			return {
-				projetos: computed(() => store.state.projetos),
+				descricao,
+				idProjeto,
+				projetos,
+				finalizarTarefa,
 			};
 		},
 	});

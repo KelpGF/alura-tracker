@@ -1,17 +1,24 @@
 <template>
 	<header>
-		<h1>
-			<img
-				alt=""
-				src="../assets/logo.png"
-			/>
-		</h1>
 		<div class="has-text-centered">
+			<h1>
+				<img
+					alt=""
+					src="../assets/logo.png"
+				/>
+			</h1>
 			<button
 				class="button is-light"
+				:class="temaEscuro ? 'is-warning' : 'is-dark'"
 				@click="alterarTema"
 			>
-				{{ textoBotaoTema }} modo escuro
+				<span class="icon is-small">
+					<i
+						class="fas"
+						:class="temaEscuro ? 'fa-sun' : 'fa-moon'"
+					></i>
+				</span>
+				<span> {{ textoBotaoTema }} modo escuro </span>
 			</button>
 		</div>
 		<nav class="panel mt-5">

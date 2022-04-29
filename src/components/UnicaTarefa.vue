@@ -1,5 +1,8 @@
 <template>
-	<box-amarelo>
+	<box-amarelo
+		class="clicavel"
+		@click="tarefaClicada(tarefa)"
+	>
 		<div class="columns">
 			<div class="column is-4">
 				{{ tarefa.descricao || 'Tarefa sem descrição' }}
@@ -41,7 +44,7 @@
 			TempoCronometrado,
 		},
 
-		emits: ['excluir'],
+		emits: ['excluir', 'tarefaClicada'],
 
 		props: {
 			tarefa: {
@@ -52,8 +55,18 @@
 
 		methods: {
 			excluir(tarefa: ITarefa) {
-				this.$emit('excluir', tarefa);
+				this.$emit('excluir', tarefa.id);
+			},
+
+			tarefaClicada(tarefa: ITarefa) {
+				this.$emit('tarefaClicada', tarefa);
 			},
 		},
 	});
 </script>
+
+<style scoped>
+	.clicavel {
+		cursor: pointer;
+	}
+</style>

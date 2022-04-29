@@ -1,0 +1,32 @@
+{
+  "projetos": [
+    {
+      "nome": "Estudar Vuex 4",
+      "id": 1
+    },
+    {
+      "nome": "Estudar vue",
+      "id": 3
+    }
+  ],
+  "tarefas": [
+    {
+      "descricao": "das",
+      "duracaoEmSegundos": 7,
+      "projeto": {
+        "nome": "Estudar Vuex",
+        "id": 1
+      },
+      "id": 1
+    },
+    {
+      "descricao": "etes",
+      "duracaoEmSegundos": 2,
+      "projeto": {
+        "nome": "Estudar vue",
+        "id": 3
+      },
+      "id": 2
+    }
+  ]
+}

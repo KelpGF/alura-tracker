@@ -50,6 +50,7 @@
 
 <script lang="ts">
 	import { useStore } from '@/store';
+	import { OBTER_PROJETOS, REMOVER_PROJETO } from '@/store/tipos-acoes';
 	import { EXCLUIR_PROJETO } from '@/store/tipos-mutacaoes';
 	import { computed, defineComponent } from 'vue';
 
@@ -64,16 +65,19 @@
 
 		setup() {
 			const store = useStore();
+			store.dispatch(OBTER_PROJETOS);
 
 			return {
 				store,
-				projetos: computed(() => store.state.projetos),
+				projetos: computed(() => store.state.projeto.projetos),
 			};
 		},
 
 		methods: {
 			excluir(id: string) {
-				this.store.commit(EXCLUIR_PROJETO, id);
+				this.store.dispatch(REMOVER_PROJETO, id).then(() => {
+					this.store.commit(EXCLUIR_PROJETO, id);
+				});
 			},
 		},
 	});
